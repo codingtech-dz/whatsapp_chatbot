@@ -102,11 +102,9 @@ export async function ensureWaClient() {
     ev.on('qr.**', handleQrEvent);
   }
 
-  const chromiumArgs =
-    process.env.WA_CHROMIUM_ARGS?.split(',').map((v) => v.trim()).filter(Boolean) || [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-    ];
+  const chromiumArgs = process.env.WA_CHROMIUM_ARGS
+    ? process.env.WA_CHROMIUM_ARGS.split(',').map((v) => v.trim()).filter(Boolean)
+    : undefined;
 
   state.starting = create({
     sessionId: 'saas-whatsapp',
