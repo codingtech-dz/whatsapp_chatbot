@@ -39,10 +39,15 @@ RUN npx prisma generate
 
 ENV NODE_ENV=production
 ENV WA_CHROME_PATH=/usr/bin/chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV CHROME_BIN=/usr/bin/chromium
 ENV WA_SESSION_PATH=/var/data/openwa-sessions
 
 RUN npm run build
 
 EXPOSE 3000
+
+RUN useradd -m appuser && mkdir -p /var/data && chown -R appuser:appuser /app /var/data
+USER appuser
 
 CMD ["npm", "run", "start"]
