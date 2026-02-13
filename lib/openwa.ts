@@ -124,12 +124,13 @@ export async function ensureWaClient() {
     ev.on('qr.**', handleQrEvent);
   }
 
-  const isRender = Boolean(process.env.RENDER || process.env.RENDER_EXTERNAL_HOSTNAME);
   const chromiumArgs = process.env.WA_CHROMIUM_ARGS
     ? process.env.WA_CHROMIUM_ARGS.split(',').map((v) => v.trim()).filter(Boolean)
-    : isRender
-    ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     : undefined;
+
+  if (chromiumArgs?.length) {
+    console.log('OpenWA: using custom chromium args:', chromiumArgs);
+  }
 
   state.starting = create({
     sessionId: 'saas-whatsapp',
