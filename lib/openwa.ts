@@ -95,15 +95,40 @@ export async function ensureWaClient() {
 
   setStatus('starting');
 
-  const chromePath = process.env.WA_CHROME_PATH;
+  const candidatePaths = [
+    process.env.WA_CHROME_PATH,
+    process.env.PUPPETEER_EXECUTABLE_PATH,
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/google-chrome',
+  ].filter(Boolean) as string[];
+
+  let chromePath: string | undefined;
+  for (const p of candidatePaths) {
+    try {
+      await fs.access(p);
+      chromePath = p;
+      break;
+    } catch {
+      continue;
+    }
+  }
+
+  if (!chromePath) {
+    console.error('OpenWA: No Chromium executable found.', { candidatePaths });
+  }
 
   if (!state.qrListenerAttached) {
     state.qrListenerAttached = true;
     ev.on('qr.**', handleQrEvent);
   }
 
+  const isRender = Boolean(process.env.RENDER || process.env.RENDER_EXTERNAL_HOSTNAME);
   const chromiumArgs = process.env.WA_CHROMIUM_ARGS
     ? process.env.WA_CHROMIUM_ARGS.split(',').map((v) => v.trim()).filter(Boolean)
+    : isRender
+    ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     : undefined;
 
   state.starting = create({
