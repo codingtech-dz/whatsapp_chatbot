@@ -128,7 +128,14 @@ export async function ensureWaClient() {
   const chromiumArgs = process.env.WA_CHROMIUM_ARGS
     ? process.env.WA_CHROMIUM_ARGS.split(',').map((v) => v.trim()).filter(Boolean)
     : isRender
-    ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    ? [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu',
+      ]
     : undefined;
 
   if (chromiumArgs?.length) {
