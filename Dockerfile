@@ -35,6 +35,8 @@ RUN npm install
 
 COPY . .
 
+RUN npx prisma generate
+
 ENV NODE_ENV=production
 ENV WA_CHROME_PATH=/usr/bin/chromium
 ENV WA_SESSION_PATH=/var/data/openwa-sessions
