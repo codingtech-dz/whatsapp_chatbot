@@ -102,6 +102,12 @@ export async function ensureWaClient() {
     ev.on('qr.**', handleQrEvent);
   }
 
+  const chromiumArgs =
+    process.env.WA_CHROMIUM_ARGS?.split(',').map((v) => v.trim()).filter(Boolean) || [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ];
+
   state.starting = create({
     sessionId: 'saas-whatsapp',
     multiDevice: true,
@@ -111,7 +117,7 @@ export async function ensureWaClient() {
     sessionDataPath: sessionDir,
     useChrome: true,
     executablePath: chromePath,
-    chromiumArgs: ['--disable-dev-shm-usage'],
+    chromiumArgs,
     qrCallback: async (qrCode: string, _asciiQR: string, _attempt: number, urlCode?: string) => {
       const dataUrl = await ensureQrDataUrl(qrCode, urlCode);
       if (dataUrl) {
