@@ -16,3 +16,5 @@ services:
         value: /usr/bin/chromium
       - key: WA_SESSION_PATH
         value: /var/data/openwa-sessions
+      - key: WA_CHROMIUM_ARGS
+        value: --no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage
