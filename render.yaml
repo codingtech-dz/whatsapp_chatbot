@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: whatsapp-ai-saas
+    env: docker
+    plan: starter
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    disk:
+      name: wa-session-disk
+      mountPath: /var/data
+      sizeGB: 2
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WA_CHROME_PATH
+        value: /usr/bin/chromium
+      - key: WA_SESSION_PATH
+        value: /var/data/openwa-sessions
