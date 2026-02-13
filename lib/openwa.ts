@@ -195,7 +195,15 @@ export async function disconnectWa() {
   try {
     if (state.client) {
       await state.client.logout();
-      await state.client.close();
+      const maybeClient = state.client as unknown as {
+        close?: () => Promise<void>;
+        kill?: () => Promise<void>;
+      };
+      if (maybeClient.close) {
+        await maybeClient.close();
+      } else if (maybeClient.kill) {
+        await maybeClient.kill();
+      }
     }
   } catch (err) {
     console.error('OpenWA disconnect error:', err);
